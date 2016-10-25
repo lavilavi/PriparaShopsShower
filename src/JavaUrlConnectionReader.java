@@ -19,17 +19,17 @@ class JavaUrlConnectionReader {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
 
         HashMap<String, ArrayList> mapOfLatlng = new HashMap<>();
-        ArrayList<String> listOfShops = getShops("東京都", "", "","");
-//        System.out.print(listOfShops);
-//        for(String shop : listOfShops) {
-//            ArrayList<Double> tmpList = getOneMap(shop);
-//            if(!tmpList.contains(null)){
-//                mapOfLatlng.put(shop,tmpList);
-//            }
-//            Thread.sleep(1000);
-////            System.out.print(mapOfLatlng);
-//        }
-//        generateMap(listOfShops, mapOfLatlng);
+        ArrayList<String> listOfAddress = getShops("東京都", "", "1017","");
+//        System.out.print(listOfAddress);
+        for(String address : listOfAddress) {
+            ArrayList<Double> coordsList = getCoords(address);
+            if(!coordsList.contains(null)){
+                mapOfLatlng.put(address,coordsList);
+            }
+            Thread.sleep(1000);
+//            System.out.print(mapOfLatlng);
+        }
+        generateMap(listOfAddress, mapOfLatlng);
     }
 
     private static ArrayList<String> getShops(String prefecture, String place, String eventId, String freeWord) {
@@ -42,7 +42,7 @@ class JavaUrlConnectionReader {
         // many of these calls can throw exceptions, so i've just
         // wrapped them all in one try/catch statement.
         try {
-            String theUrl = "http://pripara.jp/shop/search_list?pref_name=" + prefecture + "event_id=" + eventId + "&freeword=" + freeWord;
+            String theUrl = "http://pripara.jp/shop/search_list?pref_name=" + prefecture + "&event_id=" + eventId + "&freeword=" + freeWord;
 
             // create a url object
             URL url = new URL(theUrl);
@@ -61,6 +61,7 @@ class JavaUrlConnectionReader {
             // read from the urlconnection via the bufferedreader
             while ((line = bufferedReader.readLine()) != null) {
                 content.append(line + "\n");
+//                System.out.println(line);
                 if (line.contains(place)) {
                     line = line.replace("<p>", "").replace("</p>", "").replace("玩具売場", "").replace(" ", "");
 //                    System.out.println(line);
@@ -99,12 +100,11 @@ class JavaUrlConnectionReader {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.print(content);
+//        System.out.print(content);
         return listOfAddress;
     }
 
-    private static ArrayList<Double> getOneMap(String address) throws IOException {
-        HashMap<Double, Double> mapOfLatLng = new HashMap<>();
+    private static ArrayList<Double> getCoords(String address) throws IOException {
         Double latitude = null;
         Double longitude = null;
         ArrayList<Double> pairOfLatLng = new ArrayList<>();
@@ -130,12 +130,12 @@ class JavaUrlConnectionReader {
     }
 
     public static void generateMap(ArrayList<String> list, HashMap map) throws IOException {
-        File file = new File("C:\\Users\\mizutani\\Desktop\\openMap4.html");
+        File file = new File("openMap4.html");
         FileInputStream is = new FileInputStream(file);
         BufferedReader bf = new BufferedReader(new InputStreamReader(is));
         StringBuilder content = new StringBuilder();
 
-        String newFile = "C:\\Users\\mizutani\\Desktop\\resultMap.html";
+        String newFile = "resultMap.html";
         FileWriter fw = new FileWriter(new File(newFile));
 
         int i = 0;
@@ -143,7 +143,7 @@ class JavaUrlConnectionReader {
             String key = list.get(i);
             ArrayList<Double> values = (ArrayList<Double>) map.get(key);
             if (values != null) {
-                content.append("\r\n" + "[" + values.get(0) + "," + values.get(1) + "," + i + "]" + ",");
+                content.append("\r\n" + "[" + "'" + key +"'"+ "," +values.get(0) + "," + values.get(1) + "," + i + "]" + ",");
                 i++;
             }
 //            System.out.print(content);
