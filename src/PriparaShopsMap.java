@@ -15,11 +15,11 @@ import java.util.HashMap;
  *
  * @author alvin alexander, devdaily.com
  */
-class JavaUrlConnectionReader {
+class PriparaShopsMap {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
 
         HashMap<String, ArrayList> mapOfLatlng = new HashMap<>();
-        ArrayList<String> listOfAddress = getShops("東京都", "", "1017","");
+        ArrayList<String> listOfAddress = getShops("東京都", "", "","");
 //        System.out.print(listOfAddress);
         for(String address : listOfAddress) {
             ArrayList<Double> coordsList = getCoords(address);
@@ -118,7 +118,7 @@ class JavaUrlConnectionReader {
         try {
             latitude = results.findPath("location").findValue("lat").asDouble();
             longitude = results.findPath("location").findValue("lng").asDouble();
-            System.out.print("\n" + address + "の緯度が" + latitude + "で、経度が" + longitude + "です。");
+            System.out.print("\n" + address + "の緯度が" + latitude + "、経度が" + longitude + "です。");
         } catch (Exception e) {
             System.out.print("\n" + "次の住所の経度、緯度を獲得できませんでした：" + address);
 //            System.out.print(e);
@@ -130,12 +130,12 @@ class JavaUrlConnectionReader {
     }
 
     public static void generateMap(ArrayList<String> list, HashMap map) throws IOException {
-        File file = new File("openMap4.html");
-        FileInputStream is = new FileInputStream(file);
+        File template = new File("templateMap.html");
+        FileInputStream is = new FileInputStream(template);
         BufferedReader bf = new BufferedReader(new InputStreamReader(is));
         StringBuilder content = new StringBuilder();
 
-        String newFile = "resultMap.html";
+        String newFile = "actualMap.html";
         FileWriter fw = new FileWriter(new File(newFile));
 
         int i = 0;
