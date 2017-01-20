@@ -16,7 +16,7 @@ class PriparaShopsMap {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
 
         HashMap<String, ArrayList> mapOfLatlng = new HashMap<>();
-        ArrayList<String> listOfAddress = getShops("東京都", "", "","");
+        ArrayList<String> listOfAddress = getShops(arg[0],arg[1],arg[2]);
         for(String address : listOfAddress) {
             ArrayList<Double> coordsList = getCoords(address);
             if(!coordsList.contains(null)){
@@ -27,7 +27,7 @@ class PriparaShopsMap {
         generateMap(listOfAddress, mapOfLatlng);
     }
 
-    private static ArrayList<String> getShops(String prefecture, String place, String eventId, String freeWord) {
+    private static ArrayList<String> getShops(String prefecture, String place, String eventId) {
         if (place == "") {
             place = prefecture;
         }
@@ -35,7 +35,7 @@ class PriparaShopsMap {
         ArrayList<String> listOfAddress = new ArrayList<>();
 
         try {
-            String theUrl = "http://pripara.jp/shop/search_list?pref_name=" + prefecture + "&event_id=" + eventId + "&freeword=" + freeWord;
+            String theUrl = "http://pripara.jp/shop/search_list?pref_name=" + prefecture + "&event_id=" + eventId;
 
             // create a url object
             URL url = new URL(theUrl);
