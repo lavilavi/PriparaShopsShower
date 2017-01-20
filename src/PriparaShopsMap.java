@@ -10,24 +10,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * A complete Java class that demonstrates how to read content (text) from a URL
- * using the Java URL and URLConnection classes.
- *
- * @author alvin alexander, devdaily.com
+ * This can be used as pripara stores map. If you modify URL, you can use anywhere you want.
  */
 class PriparaShopsMap {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
 
         HashMap<String, ArrayList> mapOfLatlng = new HashMap<>();
         ArrayList<String> listOfAddress = getShops("東京都", "", "","");
-//        System.out.print(listOfAddress);
         for(String address : listOfAddress) {
             ArrayList<Double> coordsList = getCoords(address);
             if(!coordsList.contains(null)){
                 mapOfLatlng.put(address,coordsList);
             }
             Thread.sleep(1000);
-//            System.out.print(mapOfLatlng);
         }
         generateMap(listOfAddress, mapOfLatlng);
     }
@@ -39,8 +34,6 @@ class PriparaShopsMap {
         StringBuilder content = new StringBuilder();
         ArrayList<String> listOfAddress = new ArrayList<>();
 
-        // many of these calls can throw exceptions, so i've just
-        // wrapped them all in one try/catch statement.
         try {
             String theUrl = "http://pripara.jp/shop/search_list?pref_name=" + prefecture + "&event_id=" + eventId + "&freeword=" + freeWord;
 
@@ -61,46 +54,17 @@ class PriparaShopsMap {
             // read from the urlconnection via the bufferedreader
             while ((line = bufferedReader.readLine()) != null) {
                 content.append(line + "\n");
-//                System.out.println(line);
                 if (line.contains(place)) {
                     line = line.replace("<p>", "").replace("</p>", "").replace("玩具売場", "").replace(" ", "");
-//                    System.out.println(line);
                     if (!line.contains("<")) {
                         listOfAddress.add(line);
                     }
                 }
-
-//                if(line.contains("<h2 class=\"tbl01\">")){
-//                    line = line.replace("<h2 class=\"tbl01\">","").replace("</h2>      </div>","").replace(" ","");
-//                    System.out.println(line);
-//                    listOfShops.add(line);
-//                }
-//
-//                if(limit==true){
-//                    line = line.replace("<dd>","").replace("</dd>","").replace(" ","");
-//                    System.out.println(line);
-//                    limit = false;
-//                }
-//
-//                if(time==true){
-//                    line = line.replace("<dd>","").replace("</dd>","").replace(" ","");
-//                    System.out.println(line);
-//                    time = false;
-//                }
-//
-//                if(line.contains("年齢制限")){
-//                    limit = true;
-//                }
-//
-//                if(line.contains("参加方法：")){
-//                    time = true;
-//                }
             }
             bufferedReader.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        System.out.print(content);
         return listOfAddress;
     }
 
@@ -121,7 +85,6 @@ class PriparaShopsMap {
             System.out.print("\n" + address + "の緯度が" + latitude + "、経度が" + longitude + "です。");
         } catch (Exception e) {
             System.out.print("\n" + "次の住所の経度、緯度を獲得できませんでした：" + address);
-//            System.out.print(e);
         }
 
         pairOfLatLng.add(latitude);
@@ -146,7 +109,6 @@ class PriparaShopsMap {
                 content.append("\r\n" + "[" + "'" + key +"'"+ "," +values.get(0) + "," + values.get(1) + "," + i + "]" + ",");
                 i++;
             }
-//            System.out.print(content);
         }
 
         Boolean toReplace = false;
